@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Сервис Заботы</title>
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.9) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .animate-float { animation: float 3.5s ease-in-out infinite; }
+    .animate-pop { animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-rose-100 via-pink-50 to-purple-100 min-h-screen text-gray-800 p-4 pb-8 flex flex-col items-center justify-start select-none relative overflow-x-hidden">
+
+  <!-- Декоративные фоновые пятна свечения -->
+  <div class="fixed -top-10 -left-10 w-48 h-48 bg-pink-300 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+  <div class="fixed -bottom-10 -right-10 w-56 h-56 bg-purple-300 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+
+  <!-- Шапка -->
+  <header class="text-center my-6 relative z-10">
+    <div class="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-semibold text-rose-500 shadow-sm border border-rose-100/80 mb-3 animate-float">
+      <span>✨</span> Забота 24/7
+    </div>
+    <h1 class="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600">
+      Привет, конфетка ☀️
+    </h1>
+    <p class="text-xs text-gray-500 font-medium mt-1">Твой личный интерактивный уголок</p>
+  </header>
+
+  <!-- Карточки меню -->
+  <main class="w-full max-w-sm space-y-3.5 relative z-10">
+    
+    <!-- Комплимент -->
+    <div onclick="showCompliment()" class="glass-card cursor-pointer border border-white/80 rounded-2xl p-4 shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-between group">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-500 flex items-center justify-center text-xl shadow-inner group-hover:rotate-6 transition-transform">
+          💌
+        </div>
+        <div>
+          <div class="font-bold text-gray-800 text-sm">Комплимент дня</div>
+          <div class="text-xs text-gray-400 mt-0.5">Нажми, чтобы прочитать</div>
+        </div>
+      </div>
+      <span class="text-gray-300 text-lg group-hover:translate-x-1 transition-transform">›</span>
+    </div>
+
+    <!-- Фото -->
+    <div onclick="showPhoto()" class="glass-card cursor-pointer border border-white/80 rounded-2xl p-4 shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-between group">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-xl bg-purple-100 text-purple-500 flex items-center justify-center text-xl shadow-inner group-hover:rotate-6 transition-transform">
+          📸
+        </div>
+        <div>
+          <div class="font-bold text-gray-800 text-sm">Наше лучшее фото</div>
+          <div class="text-xs text-gray-400 mt-0.5">Особенный момент</div>
+        </div>
+      </div>
+      <span class="text-gray-300 text-lg group-hover:translate-x-1 transition-transform">›</span>
+    </div>
+
+    <!-- Купоны -->
+    <div onclick="showCoupons()" class="glass-card cursor-pointer border border-white/80 rounded-2xl p-4 shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-between group">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl shadow-inner group-hover:rotate-6 transition-transform">
+          🎟
+        </div>
+        <div>
+          <div class="font-bold text-gray-800 text-sm">Купоны желания</div>
+          <div class="text-xs text-gray-400 mt-0.5">Выбирай и активируй</div>
+        </div>
+      </div>
+      <span class="text-gray-300 text-lg group-hover:translate-x-1 transition-transform">›</span>
+    </div>
+
+    <!-- План -->
+    <div onclick="showPlan()" class="glass-card cursor-pointer border border-white/80 rounded-2xl p-4 shadow-sm hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-between group">
+      <div class="flex items-center space-x-3.5">
+        <div class="w-11 h-11 rounded-xl bg-blue-100 text-blue-500 flex items-center justify-center text-xl shadow-inner group-hover:rotate-6 transition-transform">
+          📍
+        </div>
+        <div>
+          <div class="font-bold text-gray-800 text-sm">План на вечер</div>
+          <div class="text-xs text-gray-400 mt-0.5">Секретная подсказка</div>
+        </div>
+      </div>
+      <span class="text-gray-300 text-lg group-hover:translate-x-1 transition-transform">›</span>
+    </div>
+
+  </main>
+
+  <!-- Модальное окно -->
+  <div id="modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 transition-opacity">
+    <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-6 max-w-xs w-full shadow-2xl border border-white/60 text-center space-y-4 animate-pop">
+      <div id="modal-content" class="text-gray-700 text-sm"></div>
+      <button onclick="closeModal()" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white rounded-2xl font-semibold shadow-lg shadow-pink-500/25 active:scale-[0.98] transition-all">
+        Понятно 💕
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const COMPLIMENTS = [
+      "Ты так смешно морщишь нос, когда читаешь меню 🥹",
+      "Мне нравится, как ты смеёшься над своими же шутками.",
+      "С тобой даже обычный вторник превращается в событие."
+    ];
+
+    let complimentIdx = 0;
+
+    function triggerHaptic() {
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('light');
+      }
+    }
+
+    function openModal(htmlContent) {
+      triggerHaptic();
+      document.getElementById('modal-content').innerHTML = htmlContent;
+      document.getElementById('modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      triggerHaptic();
+      document.getElementById('modal').classList.add('hidden');
+    }
+
+    function showCompliment() {
+      const text = COMPLIMENTS[complimentIdx % COMPLIMENTS.length];
+      complimentIdx++;
+      openModal(`
+        <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-500 flex items-center justify-center text-2xl mx-auto mb-3 shadow-inner">💌</div>
+        <p class="font-semibold text-gray-800 text-base leading-relaxed">${text}</p>
+      `);
+    }
+
+    function showPhoto() {
+      openModal(`
+        <div class="overflow-hidden rounded-2xl mb-3 max-h-72 flex items-center justify-center bg-gray-50 border border-gray-100">
+          <img src="photo.jpg" class="w-full h-auto max-h-72 object-contain rounded-2xl" alt="Memory" />
+        </div>
+        <p class="font-bold text-gray-800 text-base">Наш лучший вечер!</p>
+        <p class="text-xs text-gray-500 mt-1">Тут история этой фотографии...</p>
+      `);
+    }
+
+    function showCoupons() {
+      openModal(`
+        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-500 flex items-center justify-center text-2xl mx-auto mb-2 shadow-inner">🎟</div>
+        <h3 class="font-bold text-gray-800 text-base mb-3">Доступные купоны:</h3>
+        <div class="space-y-2">
+          <button onclick="useCoupon('💆 Массаж (30 минут)')" class="w-full text-left p-3.5 bg-rose-50/60 hover:bg-rose-100/80 border border-rose-100 rounded-xl text-xs font-medium text-gray-700 active:scale-95 transition-all flex items-center justify-between">
+            <span>💆 Массаж (30 мин)</span>
+            <span class="text-rose-500 font-bold">Выбрать</span>
+          </button>
+          <button onclick="useCoupon('☕ Кофе в любое время')" class="w-full text-left p-3.5 bg-rose-50/60 hover:bg-rose-100/80 border border-rose-100 rounded-xl text-xs font-medium text-gray-700 active:scale-95 transition-all flex items-center justify-between">
+            <span>☕ Кофе в любое время</span>
+            <span class="text-rose-500 font-bold">Выбрать</span>
+          </button>
+          <button onclick="useCoupon('🎬 Выбор фильма без нытья')" class="w-full text-left p-3.5 bg-rose-50/60 hover:bg-rose-100/80 border border-rose-100 rounded-xl text-xs font-medium text-gray-700 active:scale-95 transition-all flex items-center justify-between">
+            <span>🎬 Любой фильм</span>
+            <span class="text-rose-500 font-bold">Выбрать</span>
+          </button>
+        </div>
+      `);
+    }
+
+    function useCoupon(title) {
+      if (tg.sendData) {
+        tg.sendData(JSON.stringify({ action: "use_coupon", coupon: title }));
+      }
+      if (tg.HapticFeedback) {
+        tg.HapticFeedback.notificationOccurred('success');
+      }
+      openModal(`
+        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-500 flex items-center justify-center text-2xl mx-auto mb-2 shadow-inner">🎉</div>
+        <p class="font-bold text-gray-800 text-base">Купон активирован!</p>
+        <p class="text-xs text-gray-500 mt-1.5">«${title}»<br>Я уже получил уведомление 😉</p>
+      `);
+    }
+
+    function showPlan() {
+      openModal(`
+        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-500 flex items-center justify-center text-2xl mx-auto mb-2 shadow-inner">🤫</div>
+        <p class="font-bold text-gray-800 text-base mb-1">Секретный план</p>
+        <p class="text-xs text-gray-600 leading-relaxed">Подсказка: надень что-нибудь удобное и тёплое.<br>Сегодня в 19:00!</p>
+      `);
+    }
+  </script>
+</body>
+</html>
